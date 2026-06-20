@@ -93,7 +93,7 @@ export async function GET(req: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.log('Failed to fetch user status to accept messages');
+    console.log('Failed to fetch user status to accept messages', error);
     return Response.json(
       {
         success: false,
