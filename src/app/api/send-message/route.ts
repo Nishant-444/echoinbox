@@ -2,7 +2,7 @@ import { prisma } from '@/src/lib/prisma';
 import { z } from 'zod';
 
 const sendMessageSchema = z.object({
-  userName: z.string().min(1, 'Username is required'),
+  username: z.string().min(1, 'Username is required'),
   content: z
     .string()
     .min(1, 'Message cannot be empty')
@@ -25,10 +25,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const { userName, content } = result.data;
+    const { username, content } = result.data;
 
     const targetUser = await prisma.user.findFirst({
-      where: { userName: userName },
+      where: { username: username },
       select: {
         id: true,
         isAcceptingMessage: true,

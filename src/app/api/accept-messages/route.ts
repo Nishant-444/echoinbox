@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   try {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { isAcceptingMessages: acceptMessages },
+      data: { isAcceptingMessage: acceptMessages },
     });
 
     if (!updatedUser) {
@@ -71,7 +71,7 @@ export async function GET(req: Request) {
   const userId = user.id;
 
   try {
-    const foundUser = prisma.user.findUnique({
+    const foundUser = await prisma.user.findUnique({
       where: { id: userId },
     });
 
@@ -88,7 +88,7 @@ export async function GET(req: Request) {
     return Response.json(
       {
         success: true,
-        isAcceptingMessage: (await foundUser)?.isAcceptingMessage,
+        isAcceptingMessage: foundUser.isAcceptingMessage,
       },
       { status: 200 },
     );

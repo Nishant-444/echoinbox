@@ -4,7 +4,7 @@ import { ApiResponse } from "../types/ApiResponse";
 
 export async function sendVerificationEmail(
 	email: string,
-	userName: string,
+	username: string,
 	verifyCode: string,
 ): Promise<ApiResponse> {
 	try {
@@ -12,7 +12,7 @@ export async function sendVerificationEmail(
 			from: "onboarding@resend.dev",
 			to: email,
 			subject: "EchoInbox | Verification Code",
-			react: VerificationEmail({ userName, otp: verifyCode }),
+			react: VerificationEmail({ username, otp: verifyCode }),
 		});
 
 		return { success: true, message: "Verification email send successfully" };

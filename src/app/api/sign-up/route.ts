@@ -1,92 +1,91 @@
-import { sendVerificationEmail } from "@/src/helpers/sendVerificationEmail";
-import { prisma } from "@/src/lib/prisma";
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
+import { prisma } from '@/src/lib/prisma';
+import { sendVerificationEmail } from '@/src/helpers/sendVerificationEmail';
 
-export async function POST(req: Request) {
-	try {
-		const { userName, email, password } = await req.json();
-		const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
-		const expiryDate = new Date(Date.now() + 3600000); // 1 hour from now
+export async function POST(request: Request) {
+  try {
+    const { username, email, password } = await request.json();
 
-		const existingUser = await prisma.user.findFirst({
-			where: {
-				OR: [{ userName }, { email }],
-			},
-		});
+    const existingUserVerifiedByUsername = await prisma.user.findFirst({
+      where: {
+        username: username,
+        isVerified: true,
+      },
+    });
 
-		if (existingUser) {
-			if (existingUser.isVerified) {
-				return Response.json(
-					{
-						success: false,
-						message: "User already exists with this email/username",
-					},
-					{ status: 400 },
-				);
-			} else {
-				// update unverified user
-				const hashedPassword = await bcrypt.hash(password, 10);
-				const updatedUser = await prisma.user.update({
-					where: { id: existingUser.id },
-					data: {
-						password: hashedPassword,
-						verifyCode,
-						verifyCodeExpiry: expiryDate,
-					},
-				});
+    if (existingUserVerifiedByUsername) {
+      return Response.json(
+        { success: false, message: 'Username is already taken' },
+        { status: 400 },
+      );
+    }
 
-				if (!updatedUser) {
-					throw new Error(
-						"Update failed: User record disappeared or database unreachable",
-					);
-				}
-			}
-		} else {
-			// create new user
-			const hashedPassword = await bcrypt.hash(password, 10);
-			const newUser = await prisma.user.create({
-				data: {
-					userName,
-					email,
-					password: hashedPassword,
-					verifyCode,
-					verifyCodeExpiry: expiryDate,
-					isVerified: false,
-					isAcceptingMessage: true,
-				},
-			});
+    const existingUserByEmail = await prisma.user.findUnique({
+      where: { email: email },
+    });
 
-			if (!newUser) {
-				throw new Error("Failed to create user");
-			}
-		}
-		const emailResponse = await sendVerificationEmail(
-			email,
-			userName,
-			verifyCode,
-		);
+    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiryDate = new Date(Date.now() + 3600000); // 1 hour from now
 
-		if (!emailResponse.success) {
-			return Response.json(
-				{ success: false, message: emailResponse.message },
-				{ status: 500 },
-			);
-		}
-		return Response.json(
-			{
-				success: true,
-				message: "User registered successfully. Please verify your email",
-			},
-			{ status: 201 },
-		);
-	} catch (error) {
-		console.error("Error registering user", error);
-		return Response.json(
-			{
-				success: false,
-				message: "Error registering user",
-			},
-			{ status: 500 },
-		);
-	}
+    if (existingUserByEmail) {
+      if (existingUserByEmail.isVerified) {
+        return Response.json(
+          { success: false, message: 'User already exists with this email' },
+          { status: 400 },
+        );
+      } else {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await prisma.user.update({
+          where: { email: email },
+          data: {
+            password: hashedPassword,
+            verifyCode: verifyCode,
+            verifyCodeExpiry: expiryDate,
+          },
+        });
+      }
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await prisma.user.create({
+        data: {
+          username,
+          email,
+          password: hashedPassword,
+          verifyCode,
+          verifyCodeExpiry: expiryDate,
+          isVerified: false,
+          isAcceptingMessage: true,
+        },
+      });
+    }
+
+    const emailResponse = await sendVerificationEmail(
+      email,
+      username,
+      verifyCode,
+    );
+
+    if (!emailResponse.success) {
+      return Response.json(
+        { success: false, message: emailResponse.message },
+        { status: 500 },
+      );
+    }
+
+    return Response.json(
+      {
+        success: true,
+        message: 'User registered successfully. Please verify your email',
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('Error registering user:', error);
+    return Response.json(
+      { success: false, message: 'Error registering user' },
+      { status: 500 },
+    );
+  }
 }

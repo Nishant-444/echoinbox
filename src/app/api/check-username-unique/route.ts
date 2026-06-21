@@ -1,9 +1,9 @@
 import { prisma } from '@/src/lib/prisma';
-import { userNameValidation } from '@/src/schema/signUpSchema';
+import { usernameValidation } from '@/src/schema/signUpSchema';
 import z from 'zod';
 
-const UserNameQuerySchema = z.object({
-  userName: userNameValidation,
+const UsernameQuerySchema = z.object({
+  username: usernameValidation,
 });
 
 export async function GET(req: Request) {
@@ -15,33 +15,33 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const queryParam = {
-      userName: searchParams.get('username'),
+      username: searchParams.get('username'),
     };
 
     // zod validation
-    const result = UserNameQuerySchema.safeParse(queryParam);
+    const result = UsernameQuerySchema.safeParse(queryParam);
     // TODO: remove after logging and checking
     // console.log(result);
 
     if (!result.success) {
       // zod 4 new syntax for errors
-      const userNameErrors =
-        z.flattenError(result.error).fieldErrors.userName || [];
+      const usernameErrors =
+        z.flattenError(result.error).fieldErrors.username || [];
       return Response.json(
         {
           success: false,
           message:
-            userNameErrors?.length > 0
-              ? userNameErrors.join(',')
+            usernameErrors?.length > 0
+              ? usernameErrors.join(',')
               : 'Invalid query parameters',
         },
         { status: 400 },
       );
     }
-    const { userName } = result.data;
+    const { username } = result.data;
     const existingVerifiedUser = await prisma.user.findFirst({
       where: {
-        AND: [{ userName, isVerified: true }],
+        AND: [{ username, isVerified: true }],
       },
     });
 
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
     return Response.json(
       {
         success: true,
-        message: 'Username unique',
+        message: 'Username is unique',
       },
       { status: 200 },
     );

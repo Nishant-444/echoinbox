@@ -2,7 +2,7 @@ import { prisma } from '@/src/lib/prisma';
 import { z } from 'zod';
 
 const verifySchema = z.object({
-  userName: z.string().min(1, 'Username is required'),
+  username: z.string().min(1, 'Username is required'),
   code: z.string().length(6, 'Verification code must be 6 digits'),
 });
 
@@ -22,11 +22,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const { userName, code } = result.data;
-    const decodedUserName = decodeURIComponent(userName);
+    const { username, code } = result.data;
+    const decodedUsername = decodeURIComponent(username);
 
     const user = await prisma.user.findFirst({
-      where: { userName: decodedUserName },
+      where: { username: decodedUsername },
     });
 
     if (!user) {
