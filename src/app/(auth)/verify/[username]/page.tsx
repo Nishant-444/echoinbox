@@ -61,7 +61,7 @@ export default function VerifyAccount() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-slate-50 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-background p-4">
       <Card className="w-full sm:max-w-md shadow-lg border-slate-200 p-4">
         <CardHeader className="mt-6 mb-6">
           <CardTitle className="text-center text-2xl">

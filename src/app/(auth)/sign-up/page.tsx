@@ -81,7 +81,7 @@ export default function SignUpForm() {
         description: response.data.message,
       });
 
-      router.replace(`/verify/${username}`);
+      router.replace(`/verify/${data.username}`);
     } catch (error) {
       console.error('Error during sign-up:', error);
       const axiosError = error as AxiosError<ApiResponse>;
@@ -99,7 +99,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-slate-50 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-background p-4">
       <Card className="w-full sm:max-w-md shadow-lg border-slate-200 p-4">
         <CardHeader className="mt-6 mb-6">
           <CardTitle className="text-center text-2xl">Join EchoInbox</CardTitle>
@@ -227,7 +227,7 @@ export default function SignUpForm() {
               Already a member?{' '}
               <Link
                 href="/sign-in"
-                className="text-indigo-600 font-semibold hover:underline underline-offset-4"
+                className="text-primary font-semibold hover:underline underline-offset-4"
               >
                 Sign in
               </Link>

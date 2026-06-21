@@ -20,9 +20,9 @@ export async function proxy(request: NextRequest) {
   }
 
   // comment if want to seee the dashboard page without login
-  // if (!token && url.pathname.startsWith('/dashboard')) {
-  //   return NextResponse.redirect(new URL('/sign-in', request.url));
-  // }
+  if (!token && url.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
 
   return NextResponse.next();
 }

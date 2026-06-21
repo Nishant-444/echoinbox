@@ -54,7 +54,7 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-slate-50 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-background p-4">
       <Card className="w-full sm:max-w-md shadow-lg border-slate-200 p-4">
         <CardHeader className="mt-6 mb-6">
           <CardTitle className="text-center text-2xl">Welcome Back</CardTitle>
@@ -134,7 +134,7 @@ export default function SignInForm() {
               New Member?{' '}
               <Link
                 href="/sign-up"
-                className="text-indigo-600 font-semibold hover:underline underline-offset-4"
+                className="text-primary font-semibold hover:underline underline-offset-4"
               >
                 Sign up
               </Link>

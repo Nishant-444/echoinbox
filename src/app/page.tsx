@@ -1,65 +1,106 @@
-import Image from 'next/image';
+'use client';
+
+import Link from 'next/link';
+import {ArrowRight, Mail, MessageSquareQuote} from 'lucide-react';
+
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Carousel, CarouselContent, CarouselItem} from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay";
+import messages from '../messages.json';
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-col min-h-screen bg-background">
+      {/* Hero Section */}
+      <main className="grow flex flex-col items-center justify-center px-4 md:px-24 py-20">
+        <section className="text-center mb-16 max-w-3xl mx-auto flex flex-col items-center">
+          <div
+            className="mb-6 flex items-center justify-center space-x-2 bg-primary/10 border border-primary/20 px-4 py-1.5 rounded-full">
+            <MessageSquareQuote className="w-4 h-4 text-primary"/>
+            <span className="text-sm font-medium text-primary">
+              EchoInbox is now live
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
+            Dive into the World of <br className="hidden md:block"/>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-neutral-950 via-neutral-800 to-neutral-700">
+              Anonymous Feedback
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{' '}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{' '}
-            or the{' '}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{' '}
-            center.
+
+          <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl">
+            Empower your audience to share their honest thoughts. Generate your unique link, share it with your network,
+            and receive unfiltered, secure messages.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <Button asChild size="lg"
+                    className="font-semibold text-md w-full sm:w-auto shadow-md hover:scale-[1.02] transition-all">
+              <Link href="/sign-up">
+                Get Started <ArrowRight className="ml-2 w-4 h-4"/>
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline"
+                    className="font-semibold text-md w-full sm:w-auto hover:bg-slate-100">
+              <Link href="/sign-in">
+                Go to Dashboard
+              </Link>
+            </Button>
+          </div>
+        </section>
+
+        {/* Social Proof / Carousel Section */}
+        <div className="w-full max-w-3xl mx-auto flex flex-col items-center">
+          <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-6">
+            See how others are using it
+          </p>
+          <Carousel
+            plugins={[Autoplay({delay: 3000})]}
+            className="w-full"
+            opts={{
+              align: "start",
+              loop: true,
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <CarouselContent>
+              {messages.map((message, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/2 pl-4">
+                  <div className="p-1">
+                    <Card
+                      className="border-slate-200 shadow-sm bg-white h-full hover:shadow-md transition-shadow duration-300">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base font-semibold text-slate-800">
+                          {message.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex flex-col justify-between h-30">
+                        <div className="flex items-start space-x-3">
+                          <Mail className="w-5 h-5 text-neutral-500 shrink-0 mt-0.5"/>
+                          <p className="text-sm text-slate-600 line-clamp-3">
+                            "{message.content}"
+                          </p>
+                        </div>
+                        <p className="text-xs font-medium text-slate-400 mt-4 text-right">
+                          {message.received}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-slate-200 bg-white py-8 text-center">
+        <p className="text-sm text-slate-500 font-medium">
+          © {new Date().getFullYear()} EchoInbox. Built for secure feedback.
+        </p>
+      </footer>
     </div>
   );
 }
