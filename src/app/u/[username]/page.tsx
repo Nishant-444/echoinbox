@@ -114,7 +114,7 @@ export default function SendMessagePage() {
   const fetchSuggestions = async () => {
     if (cooldown > 0) return;
     setIsSuggesting(true);
-    setCooldown(5); // Start 5 seconds cooldown
+    setCooldown(6); // Start 5 seconds cooldown
 
     try {
       const response = await axios.post('/api/suggest-messages');

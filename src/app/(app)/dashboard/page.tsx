@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
-import { Loader2, RefreshCcw, Copy, Settings2 } from 'lucide-react';
+import { Loader2, RefreshCcw, Copy, Settings2, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { MessageCard } from '@/components/MessageCard';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,7 @@ export default function UserDashboard() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSwitchLoading, setIsSwitchLoading] = useState(false);
 	const [profileUrl, setProfileUrl] = useState('');
+	const [copied, setCopied] = useState(false);
 
 	const { data: session, status } = useSession();
 
@@ -119,6 +120,10 @@ export default function UserDashboard() {
 			toast.success('URL Copied!', {
 				description: 'Profile link copied to clipboard.',
 			});
+			setCopied(true);
+			setTimeout(() => {
+				setCopied(false);
+			}, 2000);
 		} catch (error) {
 			toast.error('Copy Failed', {
 				description: 'Could not copy to clipboard. Please copy it manually.',
@@ -175,9 +180,23 @@ export default function UserDashboard() {
 							className="bg-white "
 							aria-label="Your unique profile link"
 						/>
-						<Button onClick={copyToClipboard} variant="secondary">
-							<Copy className="h-4 w-4 md:mr-2" />
-							<span className="hidden md:inline">Copy</span>
+						<Button
+							onClick={copyToClipboard}
+							variant={copied ? "outline" : "secondary"}
+							className={`w-12 md:w-28 shrink-0 transition-all ${copied ? "border-green-500 text-green-700 bg-green-50/50 hover:bg-green-50/50" : ""
+								}`}
+						>
+							{copied ? (
+								<>
+									<Check className="h-4 w-4 text-green-600 md:mr-2" />
+									<span className="hidden md:inline text-green-700">Copied!</span>
+								</>
+							) : (
+								<>
+									<Copy className="h-4 w-4 md:mr-2" />
+									<span className="hidden md:inline">Copy</span>
+								</>
+							)}
 						</Button>
 					</div>
 				</div>

@@ -1,7 +1,6 @@
 import { resend } from "../lib/resend";
 import VerificationEmail from "@/emails/verificationEmail";
 import { ApiResponse } from "../types/ApiResponse";
-import React from "react";
 
 export async function sendVerificationEmail(
 	email: string,
@@ -9,11 +8,13 @@ export async function sendVerificationEmail(
 	verifyCode: string,
 ): Promise<ApiResponse> {
 	try {
+		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 		await resend.emails.send({
-			from: "onboarding@resend.dev",
+			from: "onboarding@resend.dev", // change this when get a domain
 			to: email,
-			subject: "EchoInbox | Verification Code",
-			react: <VerificationEmail username={username} otp={verifyCode} />,
+			subject: "Verify your email - EchoInbox",
+			react: VerificationEmail({ username, otp: verifyCode, baseUrl }),
 		});
 
 		return { success: true, message: "Verification email sent successfully" };

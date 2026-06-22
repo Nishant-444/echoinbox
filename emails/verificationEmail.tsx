@@ -1,42 +1,32 @@
 import {
 	Html,
 	Head,
-	Font,
 	Preview,
 	Heading,
 	Row,
 	Section,
 	Text,
 	Button,
-	Body,
 } from "react-email";
 
 interface VerificationEmailProps {
 	username: string;
 	otp: string;
+	baseUrl: string;
 }
 
 export default function VerificationEmail({
 	username,
 	otp,
+	baseUrl,
 }: VerificationEmailProps) {
 	return (
 		<Html lang="en" dir="ltr">
 			<Head>
 				<title>Verification Code</title>
-				<Font
-					fontFamily="Roboto"
-					fallbackFontFamily="Verdana"
-					webFont={{
-						url: "https://fonts.gstatic.com/s/roboto/v27/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2",
-						format: "woff2",
-					}}
-					fontWeight={400}
-					fontStyle="normal"
-				/>
 			</Head>
-			<Preview>Here&apos;s your verification code: {otp}</Preview>
-			<Section>
+			<Preview>Here's your verification code: {otp}</Preview>
+			<Section style={{ fontFamily: "sans-serif" }}>
 				<Row>
 					<Heading as="h2">Hello {username},</Heading>
 				</Row>
@@ -47,7 +37,7 @@ export default function VerificationEmail({
 					</Text>
 				</Row>
 				<Row>
-					<Text>{otp}</Text>
+					<Text style={{ fontSize: "24px", fontWeight: "bold" }}>{otp}</Text>
 				</Row>
 				<Row>
 					<Text>
@@ -56,8 +46,14 @@ export default function VerificationEmail({
 				</Row>
 				<Row>
 					<Button
-						href={`${process.env.NEXT_PUBLIC_SITE_URL}/verify/${username}`}
-						style={{ color: "#61dafb" }}
+						href={`${baseUrl}/verify/${username}`}
+						style={{
+							backgroundColor: "#000",
+							color: "#fff",
+							padding: "12px 20px",
+							borderRadius: "5px",
+							textDecoration: "none"
+						}}
 					>
 						Verify here
 					</Button>
