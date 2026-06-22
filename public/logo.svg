@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%" fill="none">
+  <!-- Speech bubble with a white interior and brand-colored border -->
+  <path 
+    d="M21 15c0 1.105-.895 2-2 2H7l-4 4V5c0-1.105.895-2 2-2h14c1.105 0 2 .895 2 2v10z" 
+    fill="#ffffff" 
+    stroke="#7a3b3b" 
+    stroke-width="2" 
+    stroke-linejoin="round"
+  />
+  <!-- First quotation mark -->
+  <path 
+    d="M10 7.8c.66 0 1.2.54 1.2 1.2 0 .4-.2.76-.52.98L10 11.5h-.8l1.1-2c-.18.06-.38.1-.6.1-.66 0-1.2-.54-1.2-1.2 0-.66.54-1.2 1.2-1.2z" 
+    fill="#7a3b3b"
+  />
+  <!-- Second quotation mark -->
+  <path 
+    d="M14 7.8c.66 0 1.2.54 1.2 1.2 0 .4-.2.76-.52.98L14 11.5h-.8l1.1-2c-.18.06-.38.1-.6.1-.66 0-1.2-.54-1.2-1.2 0-.66.54-1.2 1.2-1.2z" 
+    fill="#7a3b3b"
+  />
+</svg>

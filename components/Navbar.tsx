@@ -71,7 +71,7 @@ export default function Navbar() {
 
 					{/* Brand Logo */}
 					<Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-						<img src="/image.png" alt="EchoInbox Logo" className="h-6 w-6 object-contain" />
+						<img src="/logo.svg" alt="EchoInbox Logo" className="h-6 w-6 object-contain" />
 						<span className="text-xl font-bold tracking-tight text-slate-900">
 							EchoInbox
 						</span>
