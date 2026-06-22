@@ -56,7 +56,7 @@ export default function VerificationEmail({
 				</Row>
 				<Row>
 					<Button
-						href={`http://localhost:3000/verify/${username}`}
+						href={`${process.env.NEXT_PUBLIC_SITE_URL}/verify/${username}`}
 						style={{ color: "#61dafb" }}
 					>
 						Verify here

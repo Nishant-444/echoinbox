@@ -1,5 +1,5 @@
-import type {Metadata} from 'next';
-import {Geist, Geist_Mono} from 'next/font/google';
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from "@/components/Navbar";
 import AuthProvider from "@/src/context/authProvider";
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-	                                   children,
-                                   }: Readonly<{
+	children,
+}: Readonly<{
 	children: React.ReactNode;
 }>) {
 	return (
@@ -30,12 +30,12 @@ export default function RootLayout({
 			lang="en"
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
-		<body className="min-h-full flex flex-col">
-		<AuthProvider>
-			<Navbar/>
-			{children}
-		</AuthProvider>
-		</body>
+			<body className="min-h-full flex flex-col">
+				<AuthProvider>
+					<Navbar />
+					{children}
+				</AuthProvider>
+			</body>
 
 		</html>
 	);

@@ -7,7 +7,7 @@ const UsernameQuerySchema = z.object({
 });
 
 export async function GET(req: Request) {
-  // localhost:3000/api/check-username-unique?username=nishant
+  // /api/check-username-unique?username=nishant
   // if username exists in db and isVerified = false,
   // it is unique username and not taken at the time
   // otherwise if isVerified = true, it is taken so not unique

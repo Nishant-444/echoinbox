@@ -1,15 +1,13 @@
-'use client';
-
-import Link from 'next/link';
-import {ArrowRight, Mail, MessageSquareQuote} from 'lucide-react';
-
-import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import {Carousel, CarouselContent, CarouselItem} from '@/components/ui/carousel';
-import Autoplay from "embla-carousel-autoplay";
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/src/app/api/auth/[...nextauth]/options';
+import { MessageSquareQuote } from 'lucide-react';
+import HeroButtons from '@/components/HeroButtons';
+import TestimonialCarousel from '@/components/TestimonialCarousel';
 import messages from '../messages.json';
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section */}
@@ -35,20 +33,7 @@ export default function Home() {
             and receive unfiltered, secure messages.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Button asChild size="lg"
-                    className="font-semibold text-md w-full sm:w-auto shadow-md hover:scale-[1.02] transition-all">
-              <Link href="/sign-up">
-                Get Started <ArrowRight className="ml-2 w-4 h-4"/>
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline"
-                    className="font-semibold text-md w-full sm:w-auto hover:bg-slate-100">
-              <Link href="/sign-in">
-                Go to Dashboard
-              </Link>
-            </Button>
-          </div>
+          <HeroButtons isLoggedIn={!!session} />
         </section>
 
         {/* Social Proof / Carousel Section */}
@@ -56,42 +41,7 @@ export default function Home() {
           <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-6">
             See how others are using it
           </p>
-          <Carousel
-            plugins={[Autoplay({delay: 3000})]}
-            className="w-full"
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-          >
-            <CarouselContent>
-              {messages.map((message, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/2 pl-4">
-                  <div className="p-1">
-                    <Card
-                      className="border-slate-200 shadow-sm bg-white h-full hover:shadow-md transition-shadow duration-300">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base font-semibold text-slate-800">
-                          {message.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="flex flex-col justify-between h-30">
-                        <div className="flex items-start space-x-3">
-                          <Mail className="w-5 h-5 text-neutral-500 shrink-0 mt-0.5"/>
-                          <p className="text-sm text-slate-600 line-clamp-3">
-                            "{message.content}"
-                          </p>
-                        </div>
-                        <p className="text-xs font-medium text-slate-400 mt-4 text-right">
-                          {message.received}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          <TestimonialCarousel messages={messages} />
         </div>
       </main>
 
