@@ -178,19 +178,19 @@ export default function SendMessagePage() {
   if (!exists) {
     return (
       <div className="flex flex-col grow justify-center items-center bg-background min-h-[80vh] px-4">
-        <Card className="w-full max-w-md shadow-md border-slate-200 p-6 text-center">
+        <Card className="w-full max-w-md shadow-lg border-slate-200 p-6 text-center">
           <CardHeader className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
-              <AlertCircle className="h-6 w-6 text-red-600" />
+            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-4 border border-slate-200/50">
+              <MessageSquare className="h-6 w-6 text-slate-400" />
             </div>
-            <CardTitle className="text-2xl text-slate-900 font-bold">User Not Found</CardTitle>
-            <CardDescription className="text-slate-500 mt-2">
-              The user <span className="font-semibold text-slate-800">@{decodedUsername}</span> does not exist or has deleted their account.
+            <CardTitle className="text-2xl text-slate-900 font-bold">This inbox doesn't exist.</CardTitle>
+            <CardDescription className="text-slate-500 mt-2 text-base">
+              The username <span className="font-semibold text-slate-800">@{decodedUsername}</span> is currently available.
             </CardDescription>
           </CardHeader>
           <CardContent className="mt-4">
-            <Button asChild className="w-full">
-              <Link href="/">Create Your Own EchoInbox</Link>
+            <Button asChild className="w-full font-semibold transition-transform hover:scale-[1.01]">
+              <Link href={`/sign-up?username=${decodedUsername}`}>Claim this username</Link>
             </Button>
           </CardContent>
         </Card>

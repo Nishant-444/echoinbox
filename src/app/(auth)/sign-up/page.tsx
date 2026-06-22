@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,8 +30,11 @@ import {
 import { ApiResponse } from '@/src/types/ApiResponse';
 import { signUp } from '@/src/schema/signUpSchema';
 
-export default function SignUpForm() {
-  const [username, setUsername] = useState('');
+function SignUpFormInner() {
+  const searchParams = useSearchParams();
+  const queryUsername = searchParams.get('username') || '';
+
+  const [username, setUsername] = useState(queryUsername);
   const [usernameMessage, setUsernameMessage] = useState('');
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +46,7 @@ export default function SignUpForm() {
   const form = useForm<z.infer<typeof signUp>>({
     resolver: zodResolver(signUp),
     defaultValues: {
-      username: '', // Strictly lowercase to match the backend expectation
+      username: queryUsername, // Strictly lowercase to match the backend expectation
       email: '',
       password: '',
     },
@@ -236,5 +239,17 @@ export default function SignUpForm() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SignUpForm() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen bg-background p-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <SignUpFormInner />
+    </Suspense>
   );
 }

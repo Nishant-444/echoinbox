@@ -1,123 +1,47 @@
-'use client';
-
-import { useParams, useRouter } from 'next/navigation';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import axios, { AxiosError } from 'axios';
-import { toast } from 'sonner';
-import { Loader2, KeyRound } from 'lucide-react';
-
+import { prisma } from '@/src/lib/prisma';
+import VerifyForm from './VerifyForm';
+import { CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldGroup,
-} from '@/components/ui/field';
-import { verifySchema } from '@/src/schema/verifySchema';
-import { ApiResponse } from '@/src/types/ApiResponse';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function VerifyAccount() {
-  const router = useRouter();
-  const params = useParams<{ username: string }>();
+interface PageProps {
+  params: Promise<{ username: string }>;
+}
 
-  const form = useForm<z.infer<typeof verifySchema>>({
-    resolver: zodResolver(verifySchema),
-    defaultValues: {
-      code: '',
-    },
+export default async function VerifyPage({ params }: PageProps) {
+  const { username } = await params;
+  const decodedUsername = decodeURIComponent(username);
+
+  // Use findUnique since username is a unique column (faster DB performance)
+  const user = await prisma.user.findUnique({
+    where: { username: decodedUsername },
   });
 
-  const onSubmit = async (data: z.infer<typeof verifySchema>) => {
-    try {
-      const response = await axios.post<ApiResponse>('/api/verify-code', {
-        username: params.username,
-        code: data.code,
-      });
-
-      toast.success('Account Verified', {
-        description: response.data.message,
-      });
-
-      router.replace('/sign-in');
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      const errorMessage =
-        axiosError.response?.data.message || axiosError.message;
-
-      toast.error('Verification Failed', {
-        description: errorMessage,
-      });
-    }
-  };
-
-  return (
-    <div className="flex justify-center items-center min-h-screen bg-background p-4">
-      <Card className="w-full sm:max-w-md shadow-lg border-slate-200 p-4">
-        <CardHeader className="mt-6 mb-6">
-          <CardTitle className="text-center text-2xl">
-            Verify Your Account
-          </CardTitle>
-          <CardDescription className="text-center text-slate-500">
-            Enter the verification code sent to your email
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FieldGroup>
-              <Controller
-                name="code"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Verification Code
-                    </FieldLabel>
-                    <div className="relative">
-                      <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                      <Input
-                        {...field}
-                        id={field.name}
-                        className="pl-9 tracking-widest font-mono text-lg" // 🌟 Makes the OTP code look clean and readable
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Enter 6-digit code"
-                        maxLength={6}
-                      />
-                    </div>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-
-            <Button
-              type="submit"
-              className="w-full mt-2"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Verifying...
-                </>
-              ) : (
-                'Verify Account'
-              )}
+  if (user && user.isVerified) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-background p-4">
+        <Card className="w-full sm:max-w-md shadow-lg border-slate-200 p-6 text-center">
+          <CardHeader className="flex flex-col items-center mt-6">
+            <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4 border border-green-100">
+              <CheckCircle2 className="h-10 w-10 text-green-600" />
+            </div>
+            <CardTitle className="text-2xl text-slate-900 font-bold">
+              You're already verified!
+            </CardTitle>
+            <CardDescription className="text-slate-500 mt-2 text-base">
+              Your email is confirmed and your inbox is ready to receive messages.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="mt-4 mb-6">
+            <Button asChild className="w-full font-semibold transition-transform hover:scale-[1.01]">
+              <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return <VerifyForm username={decodedUsername} />;
 }
