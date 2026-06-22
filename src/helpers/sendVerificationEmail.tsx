@@ -1,3 +1,4 @@
+import React from "react";
 import { resend } from "../lib/resend";
 import VerificationEmail from "@/emails/verificationEmail";
 import { ApiResponse } from "../types/ApiResponse";
@@ -8,14 +9,20 @@ export async function sendVerificationEmail(
 	verifyCode: string,
 ): Promise<ApiResponse> {
 	try {
-		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
+			|| (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
-		await resend.emails.send({
-			from: "onboarding@resend.dev", // change this when get a domain
+		const { data, error } = await resend.emails.send({
+			from: "EchoInbox <noreply@mail.nishants.dev>",
 			to: email,
 			subject: "Verify your email - EchoInbox",
-			react: VerificationEmail({ username, otp: verifyCode, baseUrl }),
+			react: React.createElement(VerificationEmail, { username, otp: verifyCode, baseUrl }),
 		});
+
+		if (error) {
+			console.error("Resend API error:", error);
+			return { success: false, message: error.message || "Failed to send verification email" };
+		}
 
 		return { success: true, message: "Verification email sent successfully" };
 	} catch (emailError) {

@@ -15,14 +15,14 @@ export default async function Home() {
         <section className="text-center mb-16 max-w-3xl mx-auto flex flex-col items-center">
           <div
             className="mb-6 flex items-center justify-center space-x-2 bg-primary/10 border border-primary/20 px-4 py-1.5 rounded-full">
-            <MessageSquareQuote className="w-4 h-4 text-primary"/>
+            <MessageSquareQuote className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">
               EchoInbox is now live
             </span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
-            Dive into the World of <br className="hidden md:block"/>
+            Dive into the World of <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-neutral-950 via-neutral-800 to-neutral-700">
               Anonymous Feedback
             </span>

@@ -77,6 +77,11 @@ export async function POST(request: Request) {
       });
     }
 
+    // Always log verification code to server console for testing/debugging
+    console.log(`\n==============================================`);
+    console.log(`VERIFICATION CODE FOR @${username} (${email}): ${verifyCode}`);
+    console.log(`==============================================\n`);
+
     const emailResponse = await sendVerificationEmail(
       email,
       username,
@@ -84,9 +89,14 @@ export async function POST(request: Request) {
     );
 
     if (!emailResponse.success) {
+      // If email delivery fails (e.g. Resend sandbox limitation for non-verified emails),
+      // allow registration to succeed so testing is not blocked, and let them use the console code.
       return Response.json(
-        { success: false, message: emailResponse.message },
-        { status: 500 }
+        {
+          success: true,
+          message: `User registered successfully. (Email delivery skipped: ${emailResponse.message})`,
+        },
+        { status: 201 }
       );
     }
 
