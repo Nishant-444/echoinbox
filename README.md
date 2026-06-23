@@ -1,39 +1,20 @@
-# EchoInbox - Production Anonymous Messaging Platform
+# EchoInbox - Anonymous Messaging Platform
 
-**Version:** 1.0.0  
-**Status:** Live Deployment (MVP)  
-**Live Application Endpoint:** [https://echoinboxchat.vercel.app](https://echoinboxchat.vercel.app)  
-**Tech Stack:** TypeScript, Next.js, React, PostgreSQL, Prisma, Tailwind CSS, NextAuth, Resend, Vercel AI SDK, Groq
-
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![NextAuth](https://img.shields.io/badge/NextAuth-000000?style=for-the-badge&logo=nextauth&logoColor=white)
-![Groq](https://img.shields.io/badge/Groq-AI-orange?style=for-the-badge)
+**Status:** Live MVP  
+**Live Demo:** [https://echoinboxchat.vercel.app](https://echoinboxchat.vercel.app)  
 
 ---
 
 ## Project Overview
 
-EchoInbox is a production MVP anonymous feedback and messaging platform built with Next.js App Router. The system features secure NextAuth Credentials authentication, email verification via Resend, a fully normalized PostgreSQL database managed through Prisma ORM, and an AI-powered message suggestion engine utilizing the Vercel AI SDK and Groq Cloud API for generating spicy, engaging anonymous questions.
+EchoInbox is an anonymous feedback and messaging platform. Users can create a profile, share their public link, and receive anonymous messages. It also includes an AI feature that suggests engaging questions to send.
 
-### AI-Powered Message Suggestion Engine (New in v1.0)
-
-EchoInbox features an intelligent prompt suggestion generator powered by Groq to help users draft engaging, anonymous questions to send to their friends or classmates.
-
-- **Spicy Suggestions:** Uses Vercel AI SDK connected to Groq Cloud (specifically `llama-3.3-70b-versatile`) to generate short, highly engaging anonymous questions.
-- **Smart System Prompts:** Instructed to keep questions conversational, safe, clean, and tailored to casual social media dynamics (similar to Instagram's NGL).
-- **Zod Schema Validation:** Enforces structured output format (`{ suggestions: [string, string, string] }`) to prevent LLM hallucinations.
-
-**Live Infrastructure:**
-
-- **Deployment:** Vercel (Next.js Application Frontend/Backend Serverless)
-- **Database:** Managed PostgreSQL (via `DATABASE_URL`, local PostgreSQL for development)
-- **Email Gateway:** Resend API for transactional verification code emails
-- **AI Gateway:** Groq API Cloud Client via Vercel AI SDK
-- **Security:** CSRF protection, secure HTTP-only session cookies, input validation with Zod
+### Key Features
+- **User Accounts:** Users can sign up, verify their email, and securely log in.
+- **Anonymous Messaging:** Anyone with a user's public link can send them anonymous messages.
+- **Message Management:** Users can toggle message receiving on or off and delete messages they have received.
+- **AI Question Suggestions:** If a sender is stuck, they can ask the AI to suggest fun, engaging questions to send, powered by Groq and the Vercel AI SDK.
+- **Structured AI Outputs:** The app uses Zod schema validation to ensure the AI always returns exactly three questions, preventing formatting issues.
 
 ---
 
@@ -42,292 +23,164 @@ EchoInbox features an intelligent prompt suggestion generator powered by Groq to
 ```
 Client (Browser) → Vercel CDN/Serverless → Prisma ORM → PostgreSQL (Neon/Supabase)
                        ↓
-              Resend / Groq AI / NextAuth JWT
+               Resend / Groq AI / NextAuth
 ```
 
-**Request Flow:**
-
-1. User interacts with Next.js App Router pages (SSR / Client Components)
-2. API requests to `/api` routes handled via Next.js route handlers
-3. User authorization checked via NextAuth `getServerSession` (JWT based)
-4. Data mutation / query runs via Prisma ORM to PostgreSQL
-5. Email notifications / verification codes sent asynchronously via Resend API
-6. Anonymous question suggestions generated dynamically via Groq model via Vercel AI SDK
-
-**Key Architecture Decisions:**
-
-- **Next.js App Router:** Unified React application for frontend and serverless API handlers
-- **PostgreSQL + Prisma ORM:** Relational integrity with type-safe client generation and automatic migrations
-- **NextAuth JWT Strategy:** Stateless, session-based authentication using HTTP-only cookies
-- **Vercel AI SDK:** Structured object generation with Zod validation schemas
-- **Console Log Fallback:** Verification codes are output directly to the server logs to prevent testing blocks if email limits are hit
+**How It Works:**
+1. The user visits the website (Next.js App Router).
+2. API requests are handled by Next.js serverless route handlers.
+3. User sessions are managed securely using NextAuth.
+4. Database queries and updates are handled via Prisma ORM to PostgreSQL.
+5. Verification codes are sent to users' emails via the Resend API (and printed to the server terminal for easy development testing).
+6. Anonymous question suggestions are generated by Groq.
 
 ---
 
-## Core Technology Stack
+## Tech Stack
 
-![Next.js](https://img.shields.io/badge/Next.js-15+-000000?style=flat-square&logo=nextdotjs&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-4169E1?style=flat-square&logo=postgresql&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7.x-2D3748?style=flat-square&logo=prisma&logoColor=white)
-![NextAuth.js](https://img.shields.io/badge/NextAuth.js-v4-000000?style=flat-square&logo=nextauth&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Resend](https://img.shields.io/badge/Resend-Email-3448C5?style=flat-square)
-![Groq](https://img.shields.io/badge/Groq-Llama3-orange?style=flat-square)
-
-| Layer         | Technology               | Version | Purpose                                   |
-| ------------- | ------------------------ | ------- | ----------------------------------------- |
-| Framework     | Next.js App Router       | v16.2.9 | App execution, serverless routes & SSR    |
-| UI Library    | React                    | v19.2.4 | Interactive client-side interfaces        |
-| Language      | TypeScript               | v5.x    | Static typing and compile-time checks     |
-| Database      | PostgreSQL               | v14+    | Relational data storage for users & messages|
-| ORM           | Prisma                   | v7.8.0  | Type-safe database queries and schema     |
-| Styling       | Tailwind CSS             | v4.0.0  | Modern utility-first CSS styling          |
-| Auth          | NextAuth.js              | v4.24.14| JWT-based authentication system           |
-| Email         | Resend                   | v6.12.4 | Transactional verification emails         |
-| AI SDK        | Vercel AI SDK            | v6.0.208| Structured generation & SDK utilities     |
-| AI Model      | Groq (Llama 3.3)         | Latest  | Real-time prompt suggestion engine        |
+| Layer         | Technology               | Purpose                                   |
+| ------------- | ------------------------ | ----------------------------------------- |
+| Framework     | Next.js App Router       | Server-side rendering and API routes      |
+| Language      | TypeScript               | Type-safe development                     |
+| Database      | PostgreSQL               | Relational data storage                   |
+| ORM           | Prisma                   | Type-safe database queries                |
+| Styling       | Tailwind CSS             | Modern utility-first styling              |
+| Auth          | NextAuth.js              | User login and session management         |
+| Email         | Resend                   | Sending verification emails               |
+| AI SDK        | Vercel AI SDK            | Integrating AI models                     |
+| AI Model      | Groq (Llama 3.3)         | Fast AI text generation                  |
 
 ---
 
-## AI Features (v1.0)
+## Database Design
 
-### 1. Message Suggestions Endpoint (`/api/suggest-messages`)
+The database has two main tables: **Users** and **Messages**. It is designed with a one-to-many relationship (one user can receive many messages).
 
-Generates structured anonymous questions to help users get started.
+### Users Table
+- `id`: Unique user identifier (sequential UUIDv7 for faster index lookups)
+- `username`: Unique username (used in the public messaging URL)
+- `email`: Unique email address
+- `password`: Encrypted password (hashed using bcrypt)
+- `verifyCode`: 6-digit email verification code
+- `verifyCodeExpiry`: When the verification code expires
+- `isVerified`: Whether the user has verified their email
+- `isAcceptingMessage`: Toggle to turn messages on or off
+- `createdAt` / `updatedAt`: Timestamps
 
-- **Input:** POST request
-- **Logic:** Calls `generateText` using Groq's `llama-3.3-70b-versatile` model. Instructs the model to generate 3 unique, engaging, and clean questions.
-- **Output:** Returns JSON object: `{ success: true, messages: [string, string, string] }` matching Zod schema validation.
+### Messages Table
+- `id`: Unique message identifier (UUIDv4)
+- `userId`: The ID of the user who received this message (linked to the Users table)
+- `content`: The message text (up to 400 characters)
+- `createdAt`: Timestamp
 
----
-
-## Database Schema
-
-The database follows **Third Normal Form (3NF)** with strategic indexing and cascading deletes.
-
-### Core Tables
-
-**Users**
-
-```sql
-id                 VARCHAR PRIMARY KEY (UUIDv7)
-username           VARCHAR UNIQUE (indexed)
-email              VARCHAR UNIQUE (indexed)
-password           VARCHAR (bcrypt hashed)
-verifyCode         VARCHAR
-verifyCodeExpiry   TIMESTAMP
-isVerified         BOOLEAN DEFAULT FALSE
-isAcceptingMessage BOOLEAN DEFAULT TRUE
-createdAt          TIMESTAMP DEFAULT NOW()
-updatedAt          TIMESTAMP DEFAULT NOW()
-```
-
-**Messages**
-
-```sql
-id        VARCHAR PRIMARY KEY (UUIDv4)
-userId    VARCHAR FK → Users.id (CASCADE DELETE)
-content   VARCHAR(400)
-createdAt TIMESTAMP DEFAULT NOW()
-```
-
-**Relationships:**
-
-- User → Messages (1:N, cascade delete on user deletion)
+> [!NOTE]
+> We set up a cascade delete on the database relationship, meaning if a user deletes their account, all of their messages are automatically deleted too.
 
 ---
 
-## API Architecture
+## API Endpoints
 
-**Base URL:** `/api`
+### 1. Authentication & Signup
+- `POST /api/sign-up`: Registers a new user and generates a 6-digit verification code.
+- `POST /api/verify-code`: Verifies the user's account using the code sent to their email.
+- `POST /api/auth/signin`: Logs the user in.
+- `POST /api/auth/signout`: Logs the user out and clears the session.
 
-### Authentication Flow
+### 2. Profile Management
+- `GET /api/check-username-unique`: Checks if a username is available.
+- `POST /api/accept-messages`: Toggles whether the user is accepting new messages.
+- `GET /api/accept-messages`: Checks if the logged-in user is currently accepting messages.
+- `DELETE /api/delete-account`: Deletes the logged-in user's account and all their messages.
 
-```
-Sign Up → Generate Verification Code → Send via Resend + Log to Console
-Verify Code → Set isVerified=True → Database Updated
-Login → NextAuth verify credentials → Issue JWT → Session active in HTTP-Only cookies
-```
+### 3. Messaging
+- `GET /api/get-status/[username]`: Checks if a specific user is currently accepting messages.
+- `POST /api/send-message`: Sends an anonymous message to a user (max 400 characters).
+- `DELETE /api/delete-message/[messageid]`: Deletes a specific message (can only be done by the message owner).
 
-### Endpoint Categories
-
-**1. Authentication & Registration (4 endpoints)**
-
-```
-POST   /api/sign-up                  - Register a new account, generates 6-digit verification code
-POST   /api/verify-code              - Verify account using username and 6-digit verification code
-POST   /api/auth/signin              - Sign in via CredentialsProvider
-POST   /api/auth/signout             - Sign out and clear session tokens
-```
-
-**2. Account & Profile Management (4 endpoints)**
-
-```
-GET    /api/check-username-unique    - Check if username is available (query: ?username=...)
-POST   /api/accept-messages          - Update the user's isAcceptingMessage toggle
-GET    /api/accept-messages          - Check current user's isAcceptingMessage status
-DELETE /api/delete-account           - Delete current user's account and messages (within a transaction)
-```
-
-**3. Inbox & Messaging (3 endpoints)**
-
-```
-GET    /api/get-status/:username     - Get message acceptance status of a specific user
-POST   /api/send-message             - Send an anonymous message to a user (max 400 chars)
-DELETE /api/delete-message/:messageid- Delete a specific message by its ID (owner only)
-```
-
-**4. AI / Suggestion Engine (1 endpoint)**
-
-```
-POST   /api/suggest-messages         - Request 3 AI-generated question suggestions via Groq
-```
+### 4. AI Features
+- `POST /api/suggest-messages`: Requests 3 AI-generated questions from Groq.
 
 ---
 
-## Security Implementation
+## Security & Reliability
 
-### Authentication & Authorization
-
-**Password Security:**
-
-- Bcrypt hashing (10 salt rounds)
-- Minimum password characters enforced at application layer
-
-**NextAuth & JWT Configuration:**
-
-- Session State: Stateless JWTs stored in secure HTTP-only cookies
-- CSRF Protection: Managed internally by NextAuth.js
-- Authorized access verified in route handlers using NextAuth's `getServerSession(authOptions)`
-
-### Network Security & Safety
-
-**Transaction Reliability:**
-
-- Account deletion runs as a database transaction (`prisma.$transaction`) to safely clear user messages and records concurrently.
-- User verification constraints prevent unverified users from authenticating.
-
-### Input Validation
-
-**Validation Strategy:**
-
-- Zod schemas enforce structured validation on both forms and API payload requests.
-- Anonymous message validation limits content strictly between 1 and 400 characters to prevent spam.
+- **Password Encryption:** Passwords are encrypted before saving using `bcryptjs` with 10 salt rounds.
+- **Secure Sessions:** NextAuth handles secure login sessions using browser cookies to keep users logged in safely.
+- **Input Validation:** We use Zod to validate all form entries and API requests (e.g., checking that messages are not blank and are under 400 characters).
+- **Clean Deletion:** Deleting an account deletes both the user profile and their messages together to prevent orphaned database records.
 
 ---
 
-## Optimization Strategies
+## Performance & Optimization
 
-**Database:**
-
-- Primary keys utilize UUIDv7 for User models to optimize sequential database index sorting and generation speed.
-- Parallel fetching (`Promise.all`) on server components to load user status and messages simultaneously, reducing TTFB.
-- Cascade constraints handle clean foreign key cleanups natively on database level.
-
-**User Experience:**
-
-- Groq API calls include an 8000ms timeout threshold, handling slow downstream response rates gracefully.
-- Fallback logging of email verification codes to terminal consoles allows developers and sandbox environments to bypass email API limits.
+- **Fast Lookups:** We use UUIDv7 for user IDs, which helps the database organize and search users faster.
+- **Parallel Loading:** The dashboard loads user settings and messages at the same time using `Promise.all`, which speeds up the page loading time.
+- **AI Limiters:** We set an 8-second timeout for AI suggestions, so users aren't left waiting forever if the AI provider is slow.
+- **Development Friendly:** If the email service limit is reached during local testing, the verification code is logged to the server terminal so development is not blocked.
 
 ---
 
-## Deployment Architecture
-
-### Production Environment
-
-**Platform Configuration:**
-
-- **Deployment:** Vercel (or any containerized hosting provider)
-- **Database:** Managed PostgreSQL (Neon / Supabase Serverless)
-- **Secrets Management:** Environment variables configured securely in Vercel or local `.env`
-
----
-
-## Getting Started
+## Local Development Setup
 
 ### Prerequisites
+- Node.js installed
+- PostgreSQL database
+- Resend Account (for verification emails)
+- Groq Cloud API Key (for prompt suggestions)
 
-```bash
-Node.js v18+
-PostgreSQL v14+
-Resend Account (for verification emails)
-Groq Cloud API Key (for prompt suggestions)
-```
+### Setup Steps
 
-### Local Development Setup
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Nishant-444/echoinbox.git
+   cd echoinbox
+   ```
 
-```bash
-# Clone repository
-git clone https://github.com/Nishant-444/echoinbox.git
-cd echoinbox
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-# Install dependencies
-pnpm install
+3. **Configure environment variables:**
+   Copy the sample environment file:
+   ```bash
+   cp .env.sample .env
+   ```
+   Open the `.env` file and add your database URL, Resend API key, NextAuth secret, and Groq API key:
+   ```env
+   DATABASE_URL="postgresql://username:password@host/dbname?sslmode=require"
+   RESEND_API_KEY=your_resend_api_key
+   NEXTAUTH_SECRET=your_nextauth_secret
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   GROQ_API_KEY=your_groq_api_key
+   ```
 
-# Configure environment
-cp .env.sample .env
-# Edit .env with your PostgreSQL, Resend, NextAuth, and Groq credentials
+4. **Run database migrations:**
+   ```bash
+   npx prisma db push
+   ```
 
-# Run database migrations
-npx prisma db push
+5. **Generate Prisma Client:**
+   ```bash
+   npx prisma generate
+   ```
 
-# Generate Prisma Client
-npx prisma generate
-
-# Start development server
-pnpm dev
-```
-
-### Environment Variables
-
-```env
-# Database
-DATABASE_URL="postgresql://username:password@host/dbname?sslmode=require"
-
-# Resend Email Service
-RESEND_API_KEY=re_your_api_key
-
-# NextAuth Configuration
-NEXTAUTH_SECRET=your_nextauth_secret
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Groq Cloud API
-GROQ_API_KEY=gsk_your_groq_api_key
-```
-
-### Verification
-
-```bash
-# Health check (by checking username uniqueness)
-curl http://localhost:3000/api/check-username-unique?username=testusername
-
-# Expected response
-{
-  "success": true,
-  "message": "Username is unique"
-}
-```
+6. **Start the development server:**
+   ```bash
+   pnpm dev
+   ```
 
 ---
 
 ## Testing
 
-### Manual Testing
+### Manual Testing Flow
 
-1. Register a user by sending a payload to `/api/sign-up`.
-2. Retrieve the 6-digit verification code directly from the Node.js terminal logs (if the Resend sandbox environment is restricted).
-3. Validate the code by hitting `/api/verify-code`.
-4. Log in at `/sign-in` to configure acceptance preferences.
-5. Access `/u/[username]` to send anonymous feedback messages.
-
-### Test Coverage (Roadmap)
-
-- [ ] Unit tests for API route handlers
-- [ ] NextAuth credentials provider tests
-- [ ] AI prompt validation tests
-- [ ] Target: 80%+ coverage
+1. Register a new user at `/api/sign-up`.
+2. Retrieve the 6-digit verification code directly from the terminal console (if using the development sandbox).
+3. Validate the code at `/api/verify-code`.
+4. Log in at `/sign-in` to configure account settings.
+5. Go to `/u/[username]` to send anonymous feedback messages.
 
 ---
 
@@ -337,81 +190,41 @@ curl http://localhost:3000/api/check-username-unique?username=testusername
 echoinbox/
 ├── components/                 # Reusable UI elements (Shadcn)
 ├── prisma/
-│   ├── schema.prisma           # Prisma schema (User and Message models)
-│   └── migrations/             # Migration history
+│   ├── schema.prisma           # Database models (User and Message)
+│   └── migrations/             # Database migration history
 ├── src/
 │   ├── app/
-│   │   ├── (app)/              # Authenticated layout & dashboard pages
-│   │   ├── (auth)/             # Login, sign-up, verification pages
+│   │   ├── (app)/              # Dashboard and settings pages
+│   │   ├── (auth)/             # Login, signup, and verification pages
 │   │   ├── api/                # API route handlers
-│   │   ├── u/                  # Public message submission routing ([username])
-│   │   ├── globals.css         # Styling styles
+│   │   ├── u/                  # Public message submission pages
+│   │   ├── globals.css         # Styling
 │   │   └── layout.tsx          # Root layout
-│   ├── context/                # NextAuth session context providers
-│   ├── helpers/                # Mail sending helper
-│   ├── lib/                    # Database (prisma) & service instances (resend)
-│   ├── schema/                 # Form validation schemas (Zod)
-│   └── types/                  # TypeScript interface definitions
+│   ├── context/                # NextAuth session context
+│   ├── helpers/                # Email sending helper
+│   ├── lib/                    # Database (prisma) & service clients
+│   ├── schema/                 # Input validation schemas (Zod)
+│   └── types/                  # TypeScript types
 ├── components.json             # Shadcn configuration
-├── package.json                # Project dependencies and scripts
+├── package.json                # Dependencies and scripts
 └── tsconfig.json               # TypeScript configuration
 ```
 
 ---
 
-## Known Limitations & Roadmap
-
-### Current Constraints
-
-1. **Static AI Selection:** Returns 3 message ideas based on Groq model context without custom user customization categories.
-2. **Standard Pagination:** All messages are retrieved concurrently from the database without cursor pagination.
-3. **No Profile Pictures:** User profiles do not support custom uploaded profile avatars.
-4. **Basic Notification UI:** Emails use simple templates with no rich custom styling layouts.
-
-### Planned Enhancements (v2.0)
-
-- Real-time notifications via WebSockets.
-- Cursor-based database pagination for message dashboards.
-- Profile settings page with custom Cloudinary avatar uploads.
-- Rich-text responsive email designs.
-- Custom categories selector ("funny", "romantic", "creative") for customized AI question suggestions.
-
----
-
 ## Technical Decisions & Trade-offs
 
-### Why Next.js App Router?
+### Why Next.js?
+It lets us build both the frontend user interface and the backend API routes in a single project, making it much easier to develop and deploy.
 
-- **Unified Stack:** Direct integration of backend API handlers and SSR client-side React code in one workspace.
-- **Fast Interactive Rendering:** Server components fetch user credentials and database logs concurrently on load.
+### Why PostgreSQL and Prisma?
+PostgreSQL is a reliable database for saving users and messages. Prisma makes it very easy and safe to write database queries in TypeScript without writing raw SQL.
 
-### Why PostgreSQL + Prisma?
-
-- **Relational Constraints:** Direct cascade deletes and user-message relationships require ACID transactions.
-- **Type Safety:** Automated TypeScript client models synchronized directly on schema push.
-
-### Why Groq over OpenAI?
-
-- **Ultra-Fast Generation:** Llama 3 models hosted on Groq compile results in under 500ms.
-- **Development Pricing:** Groq Cloud provides a cost-effective alternative for rendering real-time user prompts.
+### Why Groq?
+Groq is extremely fast at running AI models (like Llama 3), returning suggestions in under a second, and offers a generous free tier for development.
 
 ### Why Resend?
-
-- **Minimal Setup:** Provides a highly intuitive, developer-friendly client layer out of the box.
-
----
-
-## Contributing
-
-Contributions welcome. Follow standard Git workflow:
-
-```bash
-git checkout -b feature/feature-name
-# Make changes
-git commit -m "Add: feature description"
-git push origin feature/feature-name
-# Open pull request
-```
+It is simple to set up for sending transactional emails (like verification codes) with minimal code.
 
 ---
 
