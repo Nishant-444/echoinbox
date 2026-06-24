@@ -21,6 +21,7 @@ import {
   Field,
   FieldLabel,
   FieldError,
+  FieldDescription,
   FieldGroup,
 } from '@/components/ui/field';
 import { verifySchema } from '@/src/schema/verifySchema';
@@ -96,6 +97,9 @@ export default function VerifyForm({ username }: VerifyFormProps) {
                         maxLength={6}
                       />
                     </div>
+                    <FieldDescription>
+                      If you do not see the email, please check your spam folder as well.
+                    </FieldDescription>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
